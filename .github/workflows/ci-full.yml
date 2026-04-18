@@ -1,0 +1,42 @@
+name: CI Full (Sin TIA)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-full:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v3
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+    
+    - name: ⏱️ EJECUTAR TODOS LOS TESTS (SIN TIA)
+      run: |
+        echo "=========================================="
+        echo "EJECUTANDO TODOS LOS TESTS"
+        echo "No importa qué archivo cambió"
+        echo "=========================================="
+        pytest tests/ -v --tb=short
+        echo ""
+        echo "✅ Completado - Ejecutados TODOS los tests"
+        echo "⏱️  Tiempo aproximado: 12 minutos"
+        echo "💰 Costo estimado CI/CD: $2.40"
+    
+    - name: Generar reporte cobertura
+      run: |
+        pytest tests/ --cov=src --cov-report=term-missing

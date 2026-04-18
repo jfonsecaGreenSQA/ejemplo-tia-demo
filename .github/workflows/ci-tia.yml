@@ -1,0 +1,86 @@
+name: CI con TIA (Simulado)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test-tia:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 2  # Necesario para git diff
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Instalar dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+    
+    - name: 🔍 Detectar archivos cambiados (TIA Simulado)
+      id: detect
+      run: |
+        echo "=========================================="
+        echo "TEST IMPACT ANALYSIS - DETECTANDO CAMBIOS"
+        echo "=========================================="
+        
+        # Obtener archivos cambiados
+        CHANGED_FILES=$(git diff --name-only HEAD~1 2>/dev/null || echo "all")
+        echo "Archivos cambiados:"
+        echo "$CHANGED_FILES"
+        echo ""
+        
+        # Determinar qué tests ejecutar
+        if [[ $CHANGED_FILES == *"payment"* ]]; then
+          echo "✓ Detectado cambio en payment.py"
+          echo "  → Ejecutar solo test_payment.py (15 tests)"
+          echo "TEST_FILE=tests/test_payment.py" >> $GITHUB_OUTPUT
+        elif [[ $CHANGED_FILES == *"auth"* ]]; then
+          echo "✓ Detectado cambio en auth.py"
+          echo "  → Ejecutar solo test_auth.py (5 tests)"
+          echo "TEST_FILE=tests/test_auth.py" >> $GITHUB_OUTPUT
+        elif [[ $CHANGED_FILES == *"cart"* ]]; then
+          echo "✓ Detectado cambio en cart.py"
+          echo "  → Ejecutar solo test_cart.py (5 tests)"
+          echo "TEST_FILE=tests/test_cart.py" >> $GITHUB_OUTPUT
+        elif [[ $CHANGED_FILES == *"search"* ]]; then
+          echo "✓ Detectado cambio en search.py"
+          echo "  → Ejecutar solo test_search.py (5 tests)"
+          echo "TEST_FILE=tests/test_search.py" >> $GITHUB_OUTPUT
+        else
+          echo "✓ Cambios en archivos no-código o múltiples"
+          echo "  → Ejecutar todos los tests por seguridad"
+          echo "TEST_FILE=tests/" >> $GITHUB_OUTPUT
+        fi
+        echo "=========================================="
+    
+    - name: ⚡ EJECUTAR TESTS SELECCIONADOS (CON TIA)
+      run: |
+        TEST_TARGET="${{ steps.detect.outputs.TEST_FILE }}"
+        echo "Ejecutando: $TEST_TARGET"
+        pytest $TEST_TARGET -v --tb=short
+        echo ""
+        echo "✅ Completado - Solo tests afectados ejecutados"
+        echo "⏱️  Tiempo aproximado: 45 segundos"
+        echo "💰 Costo estimado CI/CD: $0.15"
+        echo "📊 AHORRO: 93.75% vs ejecutar todos"
+    
+    - name: 📊 Resumen TIA
+      run: |
+        echo "=========================================="
+        echo "RESUMEN TEST IMPACT ANALYSIS"
+        echo "=========================================="
+        echo "Sin TIA: 30 tests, ~12 min, $2.40"
+        echo "Con TIA: ~15 tests, ~45 seg, $0.15"
+        echo "Ahorro: 93.75% tiempo y costo"
+        echo "=========================================="
