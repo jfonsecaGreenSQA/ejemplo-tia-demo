@@ -58,9 +58,10 @@ jobs:
     
     - name: ⚡ EJECUTAR TESTS SELECCIONADOS (CON TIA)
       run: |
+        export PYTHONPATH=${{ github.workspace }}/src
         TEST_TARGET="${{ steps.detect.outputs.TEST_FILE }}"
         echo "Ejecutando: $TEST_TARGET"
-        pytest $TEST_TARGET -v --tb=short
+        python -m pytest $TEST_TARGET -v --tb=short
         echo ""
         echo "✅ Completado - Solo tests afectados ejecutados"
         echo "⏱️  Tiempo aproximado: 45 segundos"
