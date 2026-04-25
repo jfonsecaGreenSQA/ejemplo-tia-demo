@@ -32,7 +32,7 @@ jobs:
         echo "EJECUTANDO TODOS LOS TESTS"
         echo "No importa qué archivo cambió"
         echo "=========================================="
-        pytest tests/ -v --tb=short
+        python -m pytest tests/ -v --tb=short
         echo ""
         echo "✅ Completado - Ejecutados TODOS los tests"
         echo "⏱️  Tiempo aproximado: 12 minutos"
@@ -40,4 +40,4 @@ jobs:
     
     - name: Generar reporte cobertura
       run: |
-        pytest tests/ --cov=src --cov-report=term-missing
+        python -m pytest tests/ --cov=src --cov-report=term-missing
