@@ -34,32 +34,24 @@ jobs:
         echo "TEST IMPACT ANALYSIS - DETECTANDO CAMBIOS"
         echo "=========================================="
         
-        # Obtener archivos cambiados
         CHANGED_FILES=$(git diff --name-only HEAD~1 2>/dev/null || echo "all")
         echo "Archivos cambiados:"
         echo "$CHANGED_FILES"
         echo ""
         
-        # Determinar qué tests ejecutar
         if [[ $CHANGED_FILES == *"payment"* ]]; then
           echo "✓ Detectado cambio en payment.py"
-          echo "  → Ejecutar solo test_payment.py (15 tests)"
           echo "TEST_FILE=tests/test_payment.py" >> $GITHUB_OUTPUT
         elif [[ $CHANGED_FILES == *"auth"* ]]; then
           echo "✓ Detectado cambio en auth.py"
-          echo "  → Ejecutar solo test_auth.py (5 tests)"
           echo "TEST_FILE=tests/test_auth.py" >> $GITHUB_OUTPUT
         elif [[ $CHANGED_FILES == *"cart"* ]]; then
           echo "✓ Detectado cambio en cart.py"
-          echo "  → Ejecutar solo test_cart.py (5 tests)"
           echo "TEST_FILE=tests/test_cart.py" >> $GITHUB_OUTPUT
         elif [[ $CHANGED_FILES == *"search"* ]]; then
           echo "✓ Detectado cambio en search.py"
-          echo "  → Ejecutar solo test_search.py (5 tests)"
           echo "TEST_FILE=tests/test_search.py" >> $GITHUB_OUTPUT
         else
-          echo "✓ Cambios en archivos no-código o múltiples"
-          echo "  → Ejecutar todos los tests por seguridad"
           echo "TEST_FILE=tests/" >> $GITHUB_OUTPUT
         fi
         echo "=========================================="
