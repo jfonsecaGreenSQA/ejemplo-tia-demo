@@ -27,6 +27,7 @@ jobs:
     
     - name: ⏱️ EJECUTAR TODOS LOS TESTS (SIN TIA)
       run: |
+        export PYTHONPATH=$PWD/src
         echo "=========================================="
         echo "EJECUTANDO TODOS LOS TESTS"
         echo "No importa qué archivo cambió"
