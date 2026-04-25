@@ -2,6 +2,7 @@
 Módulo de Pagos
 Procesamiento de transacciones y métodos de pago
 """
+# Versión 1.1 - TIA Demo
 
 class PaymentProcessor:
     """Procesador principal de pagos"""
